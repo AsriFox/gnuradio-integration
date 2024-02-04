@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "title": "GRC block category tree",
+  "description": "",
+  "$ref": "#/definitions/Tree",
+  "definitions": {
+    "Tree": {
+      "title": "Block category",
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 1,
+      "patternProperties": {
+        "": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "description": "Block type ID",
+                "type": "string",
+                "pattern": "[a-zA-Z][a-zA-Z0-9_]+"
+              },
+              {
+                "$ref": "#/definitions/Tree"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -14,6 +14,7 @@ export async function checkSchemaEnabled(extensionUri: Uri) {
     const schemaPath = (filename: string) => Uri.joinPath(extensionUri, 'language', 'schemas', filename).toString();
     const requiredSchemas: [string, string][] = [
         [schemaPath('gnuradio-block.schema.json'), '*.block.yml'],
+        [schemaPath('gnuradio-block-tree.schema.json'), '*.tree.yml'],
         [schemaPath('grc-flowgraph.schema.json'), '*.grc']
     ];
     if (requiredSchemas.every(v => schemas[v[0]] === v[1])) {
