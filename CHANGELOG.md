@@ -5,6 +5,9 @@ All notable changes to the "gnuradio-integration" extension will be documented i
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 ## [Unreleased]
+### Added
+- Added schema for `.block.yml` file validation
+
 ### Removed
 - Removed extension dependencies (`ms-python.python`, `vscode.git`) to make them optional
 

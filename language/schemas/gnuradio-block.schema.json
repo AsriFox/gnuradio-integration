@@ -1,0 +1,333 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "title": "GRC block definition",
+  "description": "",
+  "$ref": "#/definitions/Block",
+  "definitions": {
+    "Block": {
+      "title": "GNURadio Block",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "[a-zA-Z][a-zA-Z0-9_]+"
+        },
+        "label": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "flags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "show_id", "python", "cpp", "need_qt_gui",
+              "throttle", "not_dsp", "disable_bypass",
+              "deprecated"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Parameter"
+          }
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Port"
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Port"
+          }
+        },
+        "asserts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "value": {
+          "type": "string"
+        },
+        "templates": {
+          "$ref": "#/definitions/PythonTemplate"
+        },
+        "cpp_templates": {
+          "$ref": "#/definitions/CppTemplate"
+        },
+        "documentation": {
+          "type": "string"
+        },
+        "doc_url": {
+          "description": "Link to block documentation",
+          "type": "string",
+          "format": "uri-reference"
+        },
+        "grc_source": {
+          "description": "GRC flowgraph representation of the hier block",
+          "type": "string",
+          "format": "uri-reference"
+        },
+        "file_format": {
+          "description": "GRC file format version",
+          "type": "integer",
+          "enum": [ 1 ]
+        }
+      },
+      "required": [
+        "id",
+        "file_format"
+      ],
+      "additionalProperties": false
+    },
+    "Parameter": {
+      "title": "Block Parameter",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "[a-zA-Z][a-zA-Z0-9_]+"
+        },
+        "label": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "dtype": {
+          "description": "Data type",
+          "type": "string",
+          "anyOf": [
+            {
+              "enum": [
+                "raw", "enum",
+                "complex", "real", "float", "int", "short", "byte",
+                "complex_vector", "real_vector", "float_vector", "int_vector",
+                "hex", "string", "bool",
+                "file_open", "file_save", "dir_select", "_multiline", "_multiline_python_external",
+                "id", "stream_id", "name",
+                "gui_hint",
+                "import"
+              ]
+            },
+            {
+              "default": "${}"
+            }
+          ]
+        },
+        "default": {
+          "not": {
+            "type": "object"
+          }
+        },
+        "options": {
+          "description": "List of possible values",
+          "type": "array",
+          "items": {
+            "not": {
+              "type": "object"
+            }
+          }
+        },
+        "option_labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "option_attributes": {
+          "type": "object",
+          "items": {
+            "type": "array"
+          }
+        },
+        "hide": {
+          "type": "string",
+          "anyOf": [
+            {
+              "enum": [ "none", "part", "all" ]
+            },
+            {
+              "default": "${}"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "dtype"
+      ],
+      "additionalProperties": false
+    },
+    "Port": {
+      "title": "Port",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "[a-zA-Z][a-zA-Z0-9_]+"
+        },
+        "label": {
+          "type": "string"
+        },
+        "domain": {
+          "description": "Port domain (`stream` or `message`)",
+          "type": "string",
+          "enum": [ "stream", "message" ],
+          "default": "stream"
+        },
+        "dtype": {
+          "description": "Data type (for streams)",
+          "type": "string",
+          "anyOf": [
+            {
+              "enum": [
+                "complex", "float", "int", "short", "byte", "bits",
+                "fc64", "fc32", "sc64", "sc32", "sc16", "sc8",
+                "f64", "f32", "s64", "s32", "s16", "s8",
+                "bit", "message", "bus"
+              ]
+            },
+            {
+              "default": "${}"
+            }
+          ]
+        },
+        "vlen": {
+          "description": "Data vector length",
+          "oneOf": [
+            {
+              "type": "integer",
+              "exclusiveMinimum": 0
+            },
+            {
+              "type": "string",
+              "default": "${}"
+            }
+          ]
+        },
+        "multiplicity": {
+          "description": "Number of ports of this type",
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "string",
+              "default": "${}"
+            }
+          ]
+        },
+        "optional": {
+          "description": "Whether the port must be connected",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer",
+              "enum": [ 0, 1 ]
+            },
+            {
+              "type": "string",
+              "default": "${}"
+            }
+          ]
+        },
+        "hide": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string",
+              "default": "${}"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "PythonTemplate": {
+      "title": "Python codegen templates",
+      "type": "object",
+      "properties": {
+        "imports": {
+          "type": "string"
+        },
+        "make": {
+          "description": "Constructor template",
+          "type": "string"
+        },
+        "var_make": {
+          "description": "Value initializer template",
+          "type": "string"
+        },
+        "var_value": {
+          "type": "string"
+        },
+        "callbacks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "CppTemplate": {
+      "title": "C++ codegen templates",
+      "type": "object",
+      "properties": {
+        "includes": {
+          "description": "Header includes",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "declarations": {
+          "description": "Block object declaration",
+          "type": "string"
+        },
+        "make": {
+          "description": "Constructor template",
+          "type": "string"
+        },
+        "var_make": {
+          "description": "Value initializer template",
+          "type": "string"
+        },
+        "callbacks": {
+          "description": "Callback methods",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "link": {
+          "description": "Linked libraries",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "packages": {
+          "description": "TODO"
+        },
+        "translations": {
+          "description": "Regex substitutions",
+          "type": "object"
+        }
+      }
+    }
+  }
+}
