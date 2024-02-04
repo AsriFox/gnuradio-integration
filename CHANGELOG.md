@@ -7,6 +7,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [Unreleased]
 ### Added
 - Added schema for `.block.yml` file validation
+- Added integration with `redhat.vscode-yaml` extension (enables schemas automatically)
 
 ### Removed
 - Removed extension dependencies (`ms-python.python`, `vscode.git`) to make them optional

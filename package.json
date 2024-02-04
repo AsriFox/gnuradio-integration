@@ -445,6 +445,11 @@
                     "type": "boolean",
                     "default": false,
                     "description": "Check for XML block definitions when opening a module directory"
+                },
+                "gnuradio-integration.useYamlSchema": {
+                    "type": [ "boolean", "null" ],
+                    "default": null,
+                    "description": "Use schema for GRC files verification"
                 }
             }
         },

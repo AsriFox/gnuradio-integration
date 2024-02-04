@@ -9,6 +9,7 @@ import * as shellTask from './shellTask';
 import * as blocks from './blockFilter';
 import * as modtool from './modtool';
 import { GNURadioModuleTreeDataProvider } from './moduleTree';
+import { checkSchemaEnabled } from './yamlSchema';
 
 export async function activate(context: ExtensionContext) {
     const extId: string = context.extension.packageJSON.name;
@@ -16,6 +17,13 @@ export async function activate(context: ExtensionContext) {
     const getConfig = <T>(key: string) => workspace.getConfiguration(extId).get<T>(key);
     const setConfig = <T>(key: string, value?: T) => workspace.getConfiguration(extId)
         .update(key, value, ConfigurationTarget.Global);
+
+    if (getConfig<boolean>('useYamlSchema') !== false) {
+        const useYamlSchema = await checkSchemaEnabled(context.extensionUri);
+        if (useYamlSchema !== undefined) {
+            setConfig('useYamlSchema', useYamlSchema);
+        }
+    }
 
     const cwd = workspace.workspaceFolders?.length
         ? workspace.workspaceFolders[0].uri.fsPath
