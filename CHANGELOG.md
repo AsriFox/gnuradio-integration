@@ -6,7 +6,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 ### Added
-- Added schema for `.block.yml` file validation
+- Added schema for `.block.yml` and `.grc` file validation
 - Added integration with `redhat.vscode-yaml` extension (enables schemas automatically)
 
 ### Removed

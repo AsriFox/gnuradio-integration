@@ -1,0 +1,330 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "title": "GRC flowgraph",
+  "description": "",
+  "$ref": "#/definitions/FlowGraph",
+  "definitions": {
+    "FlowGraph": {
+      "title": "",
+      "properties": {
+        "options": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "$ref": "#/definitions/FlowGraphParameters"
+            },
+            "states": {
+              "$ref": "#/definitions/States"
+            }
+          },
+          "required": [
+            "parameters",
+            "states"
+          ],
+          "additionalProperties": false
+        },
+        "blocks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Block"
+          }
+        },
+        "connections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Connection"
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "file_format": {
+              "description": "GRC file format version",
+              "type": "integer",
+              "enum": [ 1 ]
+            },
+            "grc_version": {
+              "description": "GNURadio version",
+              "type": "string"
+            }
+          },
+          "required": [
+            "file_format"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "options",
+        "blocks",
+        "metadata"
+      ],
+      "additionalProperties": false
+    },
+    "FlowGraphParameters": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "[a-zA-Z][a-zA-Z0-9_]+"
+        },
+        "title": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "copyright": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "output_language": {
+          "type": "string",
+          "enum": [ "python", "cpp" ]
+        },
+        "gen_linking": {
+          "type": "string",
+          "enum": [ "dynamic", "static" ]
+        },
+        "gen_cmake": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string",
+              "enum": [ "On", "Off" ]
+            }
+          ]
+        },
+        "cmake_opt": {
+          "type": "string"
+        },
+        "generate_options": {
+          "type": "string",
+          "enum": [ "qt_gui", "bokeh_gui", "no_gui", "hb", "hb_qt_gui" ]
+        },
+        "category": {
+          "type": "string",
+          "default": "[GRC Hier Blocks]"
+        },
+        "max_nouts": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            {
+              "type": "string",
+              "pattern": "[0-9]+",
+              "default": "0"
+            }
+          ]
+        },
+        "hier_block_src_path": {
+          "type": "string",
+          "default": ".:"
+        },
+        "run": {
+          "description": "Autostart",
+          "oneOf": [
+            {
+              "type": "boolean",
+              "default": true
+            },
+            {
+              "type": "string",
+              "enum": [ "True", "False" ],
+              "default": "True"
+            }
+          ]
+        },
+        "run_options": {
+          "type": "string",
+          "enum": [ "run", "prompt" ]
+        },
+        "run_command": {
+          "type": "string",
+          "default": "{python} -u {filename}"
+        },
+        "catch_exceptions": {
+          "oneOf": [
+            {
+              "type": "boolean",
+              "default": true
+            },
+            {
+              "type": "string",
+              "enum": [ "True", "False" ],
+              "default": "True"
+            }
+          ]
+        },
+        "realtime_scheduling": {
+          "type": "string",
+          "enum": [ "", "1" ]
+        },
+        "thread_safe_setters": {
+          "type": "string",
+          "enum": [ "", "1" ]
+        },
+        "qt_qss_theme": {
+          "type": "string"
+        },
+        "placement": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "minItems": 2,
+              "maxItems": 4,
+              "default": [ 0, 0 ]
+            },
+            {
+              "type": "string",
+              "pattern": "\\(([0-9]+,[0-9]+)(,[0-9]+,[0-9]+)?\\)",
+              "default": "(0,0)"
+            }
+          ]
+        },
+        "window_size": {
+
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 2,
+              "maxItems": 2,
+              "default": [ 1000, 1000 ]
+            },
+            {
+              "type": "string",
+              "pattern": "\\([0-9]+,[0-9]+\\)",
+              "default": "(1000,1000)"
+            }
+          ]
+        },
+        "sizing_mode": {
+          "type": "string",
+          "enum": [
+            "fixed",
+            "stretch_both",
+            "scale_width",
+            "scale_height",
+            "scale_both"
+          ],
+          "default": "fixed"
+        }
+      }
+    },
+    "States": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "description": "Block state (enabled, disabled, bypassed)",
+          "oneOf": [
+            {
+              "type": "boolean",
+              "default": true
+            },
+            {
+              "type": "string",
+              "enum": [ "enabled", "disabled", "bypassed" ],
+              "default": "enabled"
+            }
+          ]
+        },
+        "coordinate": {
+          "description": "Block location on the flowgraph",
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "rotation": {
+          "description": "Block rotation on the flowgraph",
+          "type": "integer",
+          "enum": [ 0, 90, 180, 270 ]
+        },
+        "bus_sink": {
+          "type": "boolean"
+        },
+        "bus_source": {
+          "type": "boolean"
+        },
+        "bus_structure": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "description": "TODO",
+                  "type": "array"
+                },
+                "sink": {
+                  "description": "TODO",
+                  "type": "array"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "state",
+        "coordinate",
+        "rotation"
+      ],
+      "additionalProperties": false
+    },
+    "Block": {
+      "title": "GRC Block",
+      "properties": {
+        "name": {
+          "description": "Unique block ID in this flowgraph",
+          "type": "string",
+          "pattern": "[a-zA-Z][a-zA-Z0-9_]+"
+        },
+        "id": {
+          "description": "Block type ID",
+          "type": "string",
+          "pattern": "[a-zA-Z][a-zA-Z0-9_]+"
+        },
+        "parameters": {
+          "type": "object"
+        },
+        "states": {
+          "$ref": "#/definitions/States"
+        }
+      },
+      "required": [
+        "name",
+        "id",
+        "parameters",
+        "states"
+      ],
+      "additionalProperties": false
+    },
+    "Connection": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 4,
+      "maxItems": 4
+    }
+  }
+}
