@@ -491,9 +491,5 @@
     },
     "dependencies": {
         "@vscode/python-extension": "^1.0.5"
-    },
-    "extensionDependencies": [
-        "ms-python.python",
-        "vscode.git"
-    ]
+    }
 }
