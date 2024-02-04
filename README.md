@@ -1,12 +1,12 @@
 # GNURadio Integration
-![icon](./imgs/gnuradio-integration-icon.png)
-
 An extension to help you with work with [GNURadio](https://www.gnuradio.org) in VSCode.
 
 Features:
 - Opening and compiling GRC Flowgraph files (`.grc`)
 - Browsing the OOT module to see all blocks and the corresponding files
 - Manipulating the OOT module with `gr_modtool`
+- Editing GRC Flowgraph (`.grc`) and block definition (`.block.yml`, `.tree.yml`) files with syntax highlighting and validation
+    - Requires YAML extension (`redhat.vscode-yaml`: [Open VSX Registry](https://open-vsx.org/extension/redhat/vscode-yaml), [VS Marketplace](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml))
 
 ## OOT Module Explorer
 If a GNURadio OOT module is detected in the workspace, the **GNURadio Module** tree view will appear in the Explorer container. All blocks within that module are presented with the corresponding files: YAML GRC block definition, Python implementation for Python blocks, C++ header and implementation for C++ blocks, Python and C++ QA (unit testing) source files.
@@ -50,7 +50,7 @@ If a GNURadio OOT module is detected in the workspace, the **GNURadio Module** t
 ## GNURadio Prefix and Python Environment
 If your GNURadio is not installed system-wide (e.g. from `apt`), then it might not be discoverable by the extension. To check if the installation is available, try running `gnuradio-config-info --prefix` in your terminal.
 
-For [Conda-based installations](https://wiki.gnuradio.org/index.php?title=CondaInstall) you can use the VSCode Python extension (`ms-python.python`: [Open VSX Registry](https://open-vsx.org/extension/ms-python/python), [VS marketplace](https://marketplace.visualstudio.com/items?itemName=ms-python.python)) to activate your environment with GNURadio installation in it.  
+For [Conda-based installations](https://wiki.gnuradio.org/index.php?title=CondaInstall) you can use the VSCode Python extension (`ms-python.python`: [Open VSX Registry](https://open-vsx.org/extension/ms-python/python), [VS Marketplace](https://marketplace.visualstudio.com/items?itemName=ms-python.python)) to activate your environment with GNURadio installation in it.  
 ![Python: Select Interpreter](./imgs/python_interpreters.png)
 
 When building from source on [Linux](https://wiki.gnuradio.org/index.php?title=LinuxInstall#From_Source), [Windows](https://wiki.gnuradio.org/index.php?title=WindowsInstall#Installation_Options) or [Mac OS](https://wiki.gnuradio.org/index.php?title=MacInstall#From_Source), you can select your install location. To make this installation available to the extension, you can set GNURadio Prefix through extension settings using the output of `gnuradio-config-info --prefix`.
@@ -63,4 +63,5 @@ Please use the output of `gnuradio-config-info --prefix`; see [InstallingGR](htt
 - **Python** - for virtual environments:
   - **Default interpreter**: path to an executable (e.g. `~/.local/bin/python`);
   - **Default PYTHONPATH**: paths to library directories (e.g. `~/.local/lib/python3.11/site-packages`);
-- **Check for XML block definitions** on startup (default: disabled).
+- **Check for XML block definitions** on startup (default: disabled)
+- **Use schema for GRC files verification**

@@ -5,6 +5,8 @@ All notable changes to the "gnuradio-integration" extension will be documented i
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 ## [Unreleased]
+
+## [0.4.0] - 2024-02-04
 ### Added
 - Added schema for `.block.yml`, `.tree.yml` and `.grc` file validation
 - Added integration with `redhat.vscode-yaml` extension (enables schemas automatically)
@@ -158,7 +160,8 @@ a workaround to activate the extension when the module has no blocks yet
 ### Added
 - This is the initial release of gnuradio-integration VS Code extension
 
-[Unreleased]: https://github.com/AsriFox/gnuradio-integration/compare/v0.3.4...HEAD
+[Unreleased]: https://github.com/AsriFox/gnuradio-integration/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/AsriFox/gnuradio-integration/compare/v0.4.0...v0.3.4
 [0.3.4]: https://github.com/AsriFox/gnuradio-integration/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/AsriFox/gnuradio-integration/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/AsriFox/gnuradio-integration/compare/v0.3.1...v0.3.2

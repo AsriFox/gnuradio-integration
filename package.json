@@ -2,7 +2,7 @@
     "name": "gnuradio-integration",
     "displayName": "GNURadio Integration",
     "description": "GNURadio Integration",
-    "version": "0.3.4",
+    "version": "0.4.0",
     "license": "MIT",
     "publisher": "AsriFox",
     "engines": {
@@ -24,7 +24,8 @@
     ],
     "activationEvents": [
         "workspaceContains:**/*.grc",
-        "workspaceContains:**/*.block.yml"
+        "workspaceContains:**/*.block.yml",
+        "workspaceContains:**/*.tree.yml"
     ],
     "main": "./out/extension.js",
     "contributes": {
