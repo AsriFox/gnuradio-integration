@@ -457,21 +457,28 @@
         "languages": [
             {
                 "id": "yaml",
-                "extensions": [
-                    ".grc"
-                ]
+                "extensions": [ ".grc" ]
+            },
+            {
+                "id": "mako",
+                "aliases": [ "Mako templates", "mako" ],
+                "extensions": [ ".mako" ]
             }
         ],
         "grammars": [
             {
+                "language": "mako",
+                "scopeName": "source.mako",
+                "path": "language/syntaxes/mako.tmLanguage.json"
+            },
+            {
                 "scopeName": "source.yaml.embedded.codeblock",
                 "path": "language/syntaxes/yaml.embedded.json",
-                "injectTo": [
-                    "source.yaml"
-                ],
+                "injectTo": [ "source.yaml" ],
                 "embeddedLanguages": {
                     "meta.embedded.block.cpp.yaml": "cpp",
-                    "meta.embedded.block.python.yaml": "python"
+                    "meta.embedded.block.python.yaml": "python",
+                    "meta.embedded.block.mako.yaml": "mako"
                 }
             }
         ],
