@@ -463,6 +463,27 @@
                 "id": "mako",
                 "aliases": [ "Mako templates", "mako" ],
                 "extensions": [ ".mako" ]
+            },
+            {
+                "id": "mako-cpp",
+                "aliases": [ "Mako templates (C++)" ],
+                "extensions": [
+                    ".h.mako",
+                    ".hh.mako",
+                    ".hpp.mako",
+                    ".hxx.mako",
+                    ".cc.mako",
+                    ".cpp.mako",
+                    ".cxx.mako"
+                ]
+            },
+            {
+                "id": "mako-python",
+                "aliases": [ "Mako templates (Python)" ],
+                "extensions": [
+                    ".py.mako",
+                    ".pyi.mako"
+                ]
             }
         ],
         "grammars": [
@@ -472,13 +493,25 @@
                 "path": "language/syntaxes/mako.tmLanguage.json"
             },
             {
+                "language": "mako-cpp",
+                "scopeName": "source.mako.templates.cpp",
+                "path": "language/syntaxes/mako-cpp.tmLanguage.json"
+            },
+            {
+                "language": "mako-python",
+                "scopeName": "source.mako.templates.python",
+                "path": "language/syntaxes/mako-python.tmLanguage.json"
+            },
+            {
                 "scopeName": "source.yaml.embedded.codeblock",
                 "path": "language/syntaxes/yaml.embedded.json",
                 "injectTo": [ "source.yaml" ],
                 "embeddedLanguages": {
                     "meta.embedded.block.cpp.yaml": "cpp",
                     "meta.embedded.block.python.yaml": "python",
-                    "meta.embedded.block.mako.yaml": "mako"
+                    "meta.embedded.block.mako.yaml": "mako",
+                    "meta.embedded.block.mako.cpp.yaml": "mako-cpp",
+                    "meta.embedded.block.mako.python.yaml": "mako-python"
                 }
             }
         ],

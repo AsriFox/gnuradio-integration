@@ -14,7 +14,7 @@ repository:
         begin: |- #regex
           (?x)
             (?:(\|)|(>)) ([1-9])? ([-+])? \s* 
-            ( \# (?i:cpp|c\+\+) ) \b \s* \n?
+            ( \# (?i:cpp) ) \b \s* \n?
         beginCaptures:
           "1":
             name: keyword.control.flow.block-scalar.literal.yaml
@@ -81,3 +81,51 @@ repository:
             patterns:
               - include: source.mako
             name: meta.embedded.block.mako.yaml source.mako
+      - comment: Block scalar strings with Mako template syntax for C++
+        name: string.quoted.multi.embedded.yaml
+        begin: |- #regex
+          (?x)
+            (?:(\|)|(>)) ([1-9])? ([-+])? \s* 
+            ( \# (?i:makocpp) ) \b \s* \n?
+        beginCaptures:
+          "1":
+            name: keyword.control.flow.block-scalar.literal.yaml
+          "2":
+            name: keyword.control.flow.block-scalar.folded.yaml
+          "3":
+            name: constant.numeric.indentation-indicator.yaml
+          "4":
+            name: storage.modifier.chomping-indicator.yaml
+          "5":
+            name: meta.encoding.yaml
+        end: ^(?=\S)|(?!\G)
+        patterns:
+          - begin: ^([ ]+)(?! )
+            end: ^(?!\1|\s*$)
+            patterns:
+              - include: source.mako.templates.cpp
+            name: meta.embedded.block.mako.cpp.yaml source.mako.templates.cpp
+      - comment: Block scalar strings with Mako template syntax for Python
+        name: string.quoted.multi.embedded.yaml
+        begin: |- #regex
+          (?x)
+            (?:(\|)|(>)) ([1-9])? ([-+])? \s* 
+            ( \# (?i:makopy|makopython) ) \b \s* \n?
+        beginCaptures:
+          "1":
+            name: keyword.control.flow.block-scalar.literal.yaml
+          "2":
+            name: keyword.control.flow.block-scalar.folded.yaml
+          "3":
+            name: constant.numeric.indentation-indicator.yaml
+          "4":
+            name: storage.modifier.chomping-indicator.yaml
+          "5":
+            name: meta.encoding.yaml
+        end: ^(?=\S)|(?!\G)
+        patterns:
+          - begin: ^([ ]+)(?! )
+            end: ^(?!\1|\s*$)
+            patterns:
+              - include: source.mako.templates.python
+            name: meta.embedded.block.mako.python.yaml source.mako.templates.python
