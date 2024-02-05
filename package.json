@@ -462,6 +462,19 @@
                 ]
             }
         ],
+        "grammars": [
+            {
+                "scopeName": "source.yaml.embedded.codeblock",
+                "path": "language/syntaxes/yaml.embedded.json",
+                "injectTo": [
+                    "source.yaml"
+                ],
+                "embeddedLanguages": {
+                    "meta.embedded.block.cpp.yaml": "cpp",
+                    "meta.embedded.block.python.yaml": "python"
+                }
+            }
+        ],
         "views": {
             "explorer": [
                 {
