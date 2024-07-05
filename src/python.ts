@@ -68,6 +68,14 @@ export function getPythonpath(pythonInterp: string, gnuradioPrefix?: string, def
     return pythonpath.join(':');
 }
 
+export function getGrPrefix(gnuradioPrefix?: string) {
+    const prefix = gnuradioPrefix?.length ? gnuradioPrefix : env.GR_PREFIX;
+    const cmd = prefix?.length
+        ? resolve(prefix, 'bin', 'gnuradio-config-info')
+        : 'gnuradio-config-info';
+    return execSync(cmd + ' --prefix', { encoding: 'utf8' });
+}
+
 export class PythonShell {
     constructor(
         readonly pythonInterp: string,

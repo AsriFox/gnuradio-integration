@@ -3,7 +3,8 @@ import {
     ExtensionContext, ConfigurationTarget,
     Uri, TreeItem, EventEmitter,
 } from 'vscode';
-import { basename, sep } from 'path';
+import { basename, join, sep } from 'path';
+import { existsSync } from 'fs';
 import * as python from './python';
 import * as shellTask from './shellTask';
 import * as blocks from './blockFilter';
@@ -58,73 +59,116 @@ export async function activate(context: ExtensionContext) {
             throw err;
         }
     }
+    try {
+        gnuradioPrefix = python.getGrPrefix(gnuradioPrefix);
+    } catch (err) {
+        if (await window.showErrorMessage('Unable to load extension: GNURadio installation not found.', 'Settings') === 'Settings') {
+            commands.executeCommand('workbench.action.openSettings', 'gnuradio-integration.gnuradioPrefix');
+        }
+        return;
+    }
+
     const pythonpath = python.getPythonpath(
         pythonInterp, gnuradioPrefix,
         getConfig<string[]>('python.defaultPythonpath'));
     const execOptions = { cwd, pythonpath, gnuradioPrefix };
 
-    /** 
-     * Open GNURadio Companion application.
-     * 
-     * This command runs `gnuradio-companion` in the shell.
-     */
-    const openGnuradioCompanion = commands.registerCommand(
-        `${extId}.openGnuradioCompanion`,
-        () => shellTask.exec('gnuradio-companion', execOptions));
 
-    const execOnFlowgraph = async (cmd: string, fileUri?: Uri) => {
-        try {
-            await shellTask.execOnFile(cmd, fileUri, { fileExtension: '.grc', ...execOptions });
-        } catch (err: unknown) {
-            if (err instanceof URIError) {
-                window.showErrorMessage(err.message);
-            } else {
-                throw err;
+    if (existsSync(join(gnuradioPrefix, 'bin', 'gnuradio-companion'))
+        && existsSync(join(gnuradioPrefix, 'bin', 'grcc'))) {
+        /** 
+         * Open GNURadio Companion application.
+         * 
+         * This command runs `gnuradio-companion` in the shell.
+         */
+        const openGnuradioCompanion = commands.registerCommand(
+            `${extId}.openGnuradioCompanion`,
+            () => shellTask.exec('gnuradio-companion', execOptions));
+
+        const execOnFlowgraph = async (cmd: string, fileUri?: Uri) => {
+            try {
+                await shellTask.execOnFile(cmd, fileUri, { fileExtension: '.grc', ...execOptions });
+            } catch (err: unknown) {
+                if (err instanceof URIError) {
+                    window.showErrorMessage(err.message);
+                } else {
+                    throw err;
+                }
             }
-        }
-    };
+        };
 
-    /** 
-     * Edit the file in GNURadio Companion application.
-     * 
-     * This command runs `gnuradio-companion %f` in the shell, opening the selected file `%f`.
-     */
-    const editInGnuradioCompanion = commands.registerCommand(
-        `${extId}.editInGnuradioCompanion`,
-        (fileUri?: Uri) => execOnFlowgraph('gnuradio-companion', fileUri));
+        /** 
+         * Edit the file in GNURadio Companion application.
+         * 
+         * This command runs `gnuradio-companion %f` in the shell, opening the selected file `%f`.
+         */
+        const editInGnuradioCompanion = commands.registerCommand(
+            `${extId}.editInGnuradioCompanion`,
+            (fileUri?: Uri) => execOnFlowgraph('gnuradio-companion', fileUri));
 
-    /**
-     * Compile the GRC flowgraph file.
-     * 
-     * This command runs `grcc %f` in the shell, producing a Python executable in the same folder as the selected file `%f`.
-     */
-    const compileFlowgraph = commands.registerCommand(
-        `${extId}.compileFlowgraph`,
-        (fileUri?: Uri) => execOnFlowgraph('grcc', fileUri));
+        /**
+         * Compile the GRC flowgraph file.
+         * 
+         * This command runs `grcc %f` in the shell, producing a Python executable in the same folder as the selected file `%f`.
+         */
+        const compileFlowgraph = commands.registerCommand(
+            `${extId}.compileFlowgraph`,
+            (fileUri?: Uri) => execOnFlowgraph('grcc', fileUri));
 
-    /**
-     * Run the GRC flowgraph file.
-     * 
-     * This command runs `grcc -r %f` in the shell, producing a Python executable in the same folder as the selected file `%f` and running it.
-     */
-    const runFlowgraph = commands.registerCommand(
-        `${extId}.runFlowgraph`,
-        (fileUri?: Uri) => execOnFlowgraph('grcc -r', fileUri));
+        /**
+         * Run the GRC flowgraph file.
+         * 
+         * This command runs `grcc -r %f` in the shell, producing a Python executable in the same folder as the selected file `%f` and running it.
+         */
+        const runFlowgraph = commands.registerCommand(
+            `${extId}.runFlowgraph`,
+            (fileUri?: Uri) => execOnFlowgraph('grcc -r', fileUri));
 
-    context.subscriptions.push(
-        openGnuradioCompanion,
-        editInGnuradioCompanion,
-        compileFlowgraph,
-        runFlowgraph,
-        tasks.onDidEndTaskProcess(e => {
-            const taskCmd = shellTask.onEndTaskShellCommand(e);
-            if (RegExp(`[\\${sep}]?(grcc)`).test(taskCmd ?? '')) {
-                // TODO: C++ flowgraph?
-                // TODO: read task parameters to find the compiled file
-                window.showInformationMessage('Flowgraph compilation was successfull');
-            }
-        }),
-    );
+        context.subscriptions.push(
+            openGnuradioCompanion,
+            editInGnuradioCompanion,
+            compileFlowgraph,
+            runFlowgraph,
+            tasks.onDidEndTaskProcess(e => {
+                const taskCmd = shellTask.onEndTaskShellCommand(e);
+                if (RegExp(`[\\${sep}]?(grcc)`).test(taskCmd ?? '')) {
+                    // TODO: C++ flowgraph?
+                    // TODO: read task parameters to find the compiled file
+                    window.showInformationMessage('Flowgraph compilation was successfull');
+                }
+            }),
+        );
+    } else {
+        const grcNotFound = 'GNURadio Companion not found! '
+            + 'Please check whether GNURadio is installed correctly '
+            + 'and GRC component is included.';
+        context.subscriptions.push(
+            commands.registerCommand(
+                `${extId}.openGnuradioCompanion`,
+                () => window.showErrorMessage(grcNotFound)
+            ),
+            commands.registerCommand(
+                `${extId}.editInGnuradioCompanion`,
+                () => window.showErrorMessage(grcNotFound)
+            ),
+            commands.registerCommand(
+                `${extId}.compileFlowgraph`,
+                () => window.showErrorMessage(grcNotFound)
+            ),
+            commands.registerCommand(
+                `${extId}.runFlowgraph`,
+                () => window.showErrorMessage(grcNotFound)
+            ),
+        );
+    }
+
+    if (!existsSync(join(gnuradioPrefix, 'bin', 'gr_modtool'))) {
+        commands.executeCommand('setContext', `${extId}.moduleFound`, false);
+        window.showWarningMessage('GNURadio Modtool not found! '
+            + 'Please check whether GNURadio is installed correctly '
+            + "and 'gr-utils' component is included.");
+        return;
+    }
 
     const scriptPath = Uri.joinPath(context.extensionUri, 'scripts', 'modtool').fsPath;
     const shell = python.PythonShell.default(
