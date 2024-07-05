@@ -110,7 +110,7 @@ export async function createModule(shell: PythonShell) {
         throw Error('Directory already exists');
     }
     shell.outputChannel.appendLine(`\n[Running] gr_modtool newmod ${newmodName}`);
-    await shell.run(['newmod.py', newmodName], parentDir.fsPath);
+    await shell.run(['gr_modtool', 'newmod', '-b', newmodName], parentDir.fsPath);
     if (await window.showInformationMessage(`New GNURadio module "${newmodName}" created in ${newmodPath}.`, 'Open Directory') === 'Open Directory') {
         return commands.executeCommand<void>('vscode.openFolder', Uri.file(newmodPath));
     }
@@ -135,7 +135,12 @@ export async function getModuleInfo(execModtool: ModtoolClosure, json: boolean =
         }
     }
     if (json) {
-        return JSON.parse(output.trim().replace(/\'/g, '"'));
+        const jtext = output
+            .trim()
+            .replace(/\'/g, '"')
+            .replace('False', 'false')
+            .replace('True', 'true');
+        return JSON.parse(jtext);
     }
     await window.showInformationMessage(
         'GNURadio Module Info', {
@@ -555,7 +560,7 @@ export async function removeBlock(execModtool: ModtoolClosure, cwd: string, modu
     const confirm = await window.showWarningMessage(
         warningMessage, { detail: detailMessage.join('\n- '), modal: true }, 'Yes');
     if (confirm === 'Yes') {
-        const result = await execModtool('rm', blockName);
+        const result = await execModtool('rm', '-y', blockName);
         if (result instanceof PythonShellError) {
             throw new ModtoolError(result.log ?? result.message);
         }

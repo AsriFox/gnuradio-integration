@@ -170,7 +170,8 @@ export async function activate(context: ExtensionContext) {
         return;
     }
 
-    const scriptPath = Uri.joinPath(context.extensionUri, 'scripts', 'modtool').fsPath;
+    // const scriptPath = Uri.joinPath(context.extensionUri, 'scripts', 'modtool').fsPath;
+    const scriptPath = join(gnuradioPrefix, 'bin');
     const shell = python.PythonShell.default(
         scriptPath, context.extension.packageJSON.displayName,
         pythonInterp, { pythonpath, gnuradioPrefix });
@@ -188,10 +189,11 @@ export async function activate(context: ExtensionContext) {
     const modtoolEvent = new EventEmitter<string[]>();
     context.subscriptions.push(modtoolEvent);
     const execModtool: modtool.ModtoolClosure = async (cmd, ...args) => {
-        shell.outputChannel.appendLine(`\n[Running] gr_modtool ${cmd} ${args.join(' ')}`);
-        return await shell.run([cmd + '.py', ...args], cwd).then(
+        const cargs = [cmd, '-b', ...args];
+        shell.outputChannel.appendLine(`\n[Running] gr_modtool ${cargs.join(' ')}`);
+        return await shell.run(['gr_modtool', ...cargs], cwd).then(
             output => {
-                modtoolEvent.fire([cmd, ...args]);
+                modtoolEvent.fire(cargs);
                 return output;
             },
             (err: unknown) => {
