@@ -198,7 +198,7 @@ export async function createBlock(execModtool: ModtoolClosure, extRoot: Uri, cwd
                 { label: 'general', description: 'gr::block', detail: 'General-purpose block type' },
                 { label: 'sync', description: 'gr::sync_block', detail: 'Block with synchronous 1:1 input-to-output' },
                 { label: 'decimator', description: 'gr::sync_decimator', detail: 'Block with synchronous N:1 input-to-output' },
-                { label: 'interpolator', description: 'gr::sync_interpolator', detail: 'Block with synchronous N:1 input-to-output' },
+                { label: 'interpolator', description: 'gr::sync_interpolator', detail: 'Block with synchronous 1:N input-to-output' },
                 { label: 'source', description: 'gr::sync_block', detail: 'Source block with outputs, but no stream inputs' },
                 { label: 'sink', description: 'gr::sync_block', detail: 'Sink block with inputs, but no stream outputs' },
                 { label: 'tagged_stream', description: 'gr::tagged_stream_block', detail: 'Block with input-to-output flow controlled by input stream tags (e.g. packetized streams)' },
